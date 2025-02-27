@@ -8,6 +8,8 @@ mariadb-connector-c.pkg-path = "mariadb-connector-c"
 # helper tools
 gum.pkg-path = "gum"
 coreutils.pkg-path = "coreutils"
+gcc.pkg-path = "gcc"
+pkg-config.pkg-path = "pkg-config"
 
 [vars]
 
@@ -45,13 +47,13 @@ function with_spinner() {
 }
 
 function ensure_venv() {
-  uv venv -p "$FLOX_PYTHON_UV_INTERPRETER" "$FLOX_PYTHON_UV_VENV_PATH"
+  LD_AUDIT= uv venv -p "$FLOX_PYTHON_UV_INTERPRETER" "$FLOX_PYTHON_UV_VENV_PATH"
   source "$FLOX_PYTHON_UV_VENV_PATH/bin/activate"
 }
 export -f ensure_venv
 
 function install_packages() {
-  uv sync
+  LD_AUDIT= uv sync
 }
 export -f install_packages
 
@@ -60,7 +62,7 @@ export -f install_packages
 indent && echo
 indent && echo
 
-if [ "$FLOX_PYTHON_UV_VENV_INTERPRETER" != "$FLOX_PYTHON_UV_INTERPRETER" ]; then
+if [ "$FLOX_PYTHON_UV_VENV_INTERPRETER" != "$(dirname "$FLOX_PYTHON_UV_INTERPRETER")" ]; then
   with_spinner ensure_venv "Creating virtual environment"
   indent && echo -e "{{ Foreground \"#ffffff\" \"✅ Virtual environment was created.\" }}\n" \
     | gum format -t template

@@ -6,11 +6,17 @@
       "coreutils": {
         "pkg-path": "coreutils"
       },
+      "gcc": {
+        "pkg-path": "gcc"
+      },
       "gum": {
         "pkg-path": "gum"
       },
       "mariadb-connector-c": {
         "pkg-path": "mariadb-connector-c"
+      },
+      "pkg-config": {
+        "pkg-path": "pkg-config"
       },
       "python": {
         "pkg-path": "python313Full"
@@ -20,7 +26,7 @@
       }
     },
     "hook": {
-      "on-activate": "export FLOX_PYTHON_UV_VENV_PATH=\"$FLOX_ENV_PROJECT/.venv\"\nexport FLOX_PYTHON_UV_VENV_INTERPRETER=\"$(grep \"^home = \" \"$FLOX_PYTHON_UV_VENV_PATH/pyvenv.cfg\" 2> /dev/null | sed 's/^home = //' || echo false)\"\nexport FLOX_PYTHON_UV_INTERPRETER=\"$(realpath $(which python3))\"\n\n# Make sure any tools are not attempting to use the Python interpreter from any\n# existing virtual environment.\nunset VIRTUAL_ENV\n\nexport UV_PROJECT_ENVIRONMENT=\"$FLOX_PYTHON_UV_VENV_PATH\"\n\nfunction indent() {\n  echo -e '{{ Foreground \"#cccccc\" \" │ \"}}' | \\\n    gum format -t template --theme=auto\n}\n\nfunction with_spinner() {\n  if [[ \"$FLOX_ENVS_TESTING\" == \"1\" ]]; then\n    bash -c \"$1\"\n  else\n    echo\n    gum spin \\\n      --show-error \\\n      --spinner line \\\n      --spinner.foreground=\"#cccccc\" \\\n      --title \" >>> $2 ...\" \\\n      --title.foreground=\"#cccccc\" \\\n        -- bash -c \"$1\"\n    echo -en \"\\033[2A\\033[K\"\n  fi\n}\n\nfunction ensure_venv() {\n  uv venv -p \"$FLOX_PYTHON_UV_INTERPRETER\" \"$FLOX_PYTHON_UV_VENV_PATH\"\n  source \"$FLOX_PYTHON_UV_VENV_PATH/bin/activate\"\n}\nexport -f ensure_venv\n\nfunction install_packages() {\n  uv sync\n}\nexport -f install_packages\n\n\n\nindent && echo\nindent && echo\n\nif [ \"$FLOX_PYTHON_UV_VENV_INTERPRETER\" != \"$FLOX_PYTHON_UV_INTERPRETER\" ]; then\n  with_spinner ensure_venv \"Creating virtual environment\"\n  indent && echo -e \"{{ Foreground \\\"#ffffff\\\" \\\"✅ Virtual environment was created.\\\" }}\\n\" \\\n    | gum format -t template\nelse\n  indent && echo -e \"{{ Foreground \\\"#ffffff\\\" \\\"✅ Virtual environment already exists.\\\" }}\\n\" \\\n    | gum format -t template\nfi\n\nindent && echo\n\nif [ -f pyproject.toml ]; then\n  with_spinner install_packages \"Installing Python packages\"\n  indent && echo -e \"{{ Foreground \\\"#ffffff\\\" \\\"✅ Python packages installed.\\\" }}\\n\" \\\n    | gum format -t template\nelse\n  indent && echo -e \"{{ Foreground \\\"#ffffff\\\" \\\"✅ No need to install Python packages.\\\" }}\\n\" \\\n    | gum format -t template\nfi\n\nindent && echo\n"
+      "on-activate": "export FLOX_PYTHON_UV_VENV_PATH=\"$FLOX_ENV_PROJECT/.venv\"\nexport FLOX_PYTHON_UV_VENV_INTERPRETER=\"$(grep \"^home = \" \"$FLOX_PYTHON_UV_VENV_PATH/pyvenv.cfg\" 2> /dev/null | sed 's/^home = //' || echo false)\"\nexport FLOX_PYTHON_UV_INTERPRETER=\"$(realpath $(which python3))\"\n\n# Make sure any tools are not attempting to use the Python interpreter from any\n# existing virtual environment.\nunset VIRTUAL_ENV\n\nexport UV_PROJECT_ENVIRONMENT=\"$FLOX_PYTHON_UV_VENV_PATH\"\n\nfunction indent() {\n  echo -e '{{ Foreground \"#cccccc\" \" │ \"}}' | \\\n    gum format -t template --theme=auto\n}\n\nfunction with_spinner() {\n  if [[ \"$FLOX_ENVS_TESTING\" == \"1\" ]]; then\n    bash -c \"$1\"\n  else\n    echo\n    gum spin \\\n      --show-error \\\n      --spinner line \\\n      --spinner.foreground=\"#cccccc\" \\\n      --title \" >>> $2 ...\" \\\n      --title.foreground=\"#cccccc\" \\\n        -- bash -c \"$1\"\n    echo -en \"\\033[2A\\033[K\"\n  fi\n}\n\nfunction ensure_venv() {\n  LD_AUDIT= uv venv -p \"$FLOX_PYTHON_UV_INTERPRETER\" \"$FLOX_PYTHON_UV_VENV_PATH\"\n  source \"$FLOX_PYTHON_UV_VENV_PATH/bin/activate\"\n}\nexport -f ensure_venv\n\nfunction install_packages() {\n  LD_AUDIT= uv sync\n}\nexport -f install_packages\n\n\n\nindent && echo\nindent && echo\n\nif [ \"$FLOX_PYTHON_UV_VENV_INTERPRETER\" != \"$(dirname \"$FLOX_PYTHON_UV_INTERPRETER\")\" ]; then\n  with_spinner ensure_venv \"Creating virtual environment\"\n  indent && echo -e \"{{ Foreground \\\"#ffffff\\\" \\\"✅ Virtual environment was created.\\\" }}\\n\" \\\n    | gum format -t template\nelse\n  indent && echo -e \"{{ Foreground \\\"#ffffff\\\" \\\"✅ Virtual environment already exists.\\\" }}\\n\" \\\n    | gum format -t template\nfi\n\nindent && echo\n\nif [ -f pyproject.toml ]; then\n  with_spinner install_packages \"Installing Python packages\"\n  indent && echo -e \"{{ Foreground \\\"#ffffff\\\" \\\"✅ Python packages installed.\\\" }}\\n\" \\\n    | gum format -t template\nelse\n  indent && echo -e \"{{ Foreground \\\"#ffffff\\\" \\\"✅ No need to install Python packages.\\\" }}\\n\" \\\n    | gum format -t template\nfi\n\nindent && echo\n"
     },
     "profile": {
       "bash": "source \"$FLOX_PYTHON_UV_VENV_PATH/bin/activate\"\n",
@@ -159,6 +165,134 @@
         "debug": "/nix/store/m6wn8q0zvy7pz6wjd221hav5w4blicf7-coreutils-9.6-debug",
         "info": "/nix/store/i3bay64pdck4zq094qks7j1ivg042nzg-coreutils-9.6-info",
         "out": "/nix/store/fr9yr63a1267cr0r86w18c77mh3xavcc-coreutils-9.6"
+      },
+      "system": "x86_64-linux",
+      "group": "toplevel",
+      "priority": 5
+    },
+    {
+      "attr_path": "gcc",
+      "broken": false,
+      "derivation": "/nix/store/dkq5ji1y441i919x5v79x66xh31cd11h-gcc-wrapper-14-20241116.drv",
+      "description": "GNU Compiler Collection, version 14-20241116 (wrapper script)",
+      "install_id": "gcc",
+      "license": "GPL-3.0-or-later",
+      "locked_url": "https://github.com/flox/nixpkgs?rev=0196c0175e9191c474c26ab5548db27ef5d34b05",
+      "name": "gcc-wrapper-14-20241116",
+      "pname": "gcc",
+      "rev": "0196c0175e9191c474c26ab5548db27ef5d34b05",
+      "rev_count": 758135,
+      "rev_date": "2025-02-24T03:24:50Z",
+      "scrape_date": "2025-02-25T02:25:54Z",
+      "stabilities": [
+        "unstable"
+      ],
+      "unfree": false,
+      "version": "14-20241116",
+      "outputs_to_install": [
+        "man",
+        "out"
+      ],
+      "outputs": {
+        "info": "/nix/store/10vrbhhqyjfa5rs0wycrwj3mvbgzq4mj-gcc-wrapper-14-20241116-info",
+        "man": "/nix/store/s7zfnbf8nhmnj6iwggiv7b6hrswblc0w-gcc-wrapper-14-20241116-man",
+        "out": "/nix/store/assxd1wk7lm2w68z4g56b4zfrm36af31-gcc-wrapper-14-20241116"
+      },
+      "system": "aarch64-darwin",
+      "group": "toplevel",
+      "priority": 5
+    },
+    {
+      "attr_path": "gcc",
+      "broken": false,
+      "derivation": "/nix/store/5abzc72b0j29qwilhxdh5hlay3wx7ca7-gcc-wrapper-14-20241116.drv",
+      "description": "GNU Compiler Collection, version 14-20241116 (wrapper script)",
+      "install_id": "gcc",
+      "license": "GPL-3.0-or-later",
+      "locked_url": "https://github.com/flox/nixpkgs?rev=0196c0175e9191c474c26ab5548db27ef5d34b05",
+      "name": "gcc-wrapper-14-20241116",
+      "pname": "gcc",
+      "rev": "0196c0175e9191c474c26ab5548db27ef5d34b05",
+      "rev_count": 758135,
+      "rev_date": "2025-02-24T03:24:50Z",
+      "scrape_date": "2025-02-25T02:25:54Z",
+      "stabilities": [
+        "unstable"
+      ],
+      "unfree": false,
+      "version": "14-20241116",
+      "outputs_to_install": [
+        "man",
+        "out"
+      ],
+      "outputs": {
+        "info": "/nix/store/gixjrrdvfhhf0z1z3zxbjc3zr3vvjyf5-gcc-wrapper-14-20241116-info",
+        "man": "/nix/store/yimc93hlkz72laxhmk09hkmx11ij1fvz-gcc-wrapper-14-20241116-man",
+        "out": "/nix/store/8p08lgzbiqvj5fni1d9hxc6ma1z0mh2z-gcc-wrapper-14-20241116"
+      },
+      "system": "aarch64-linux",
+      "group": "toplevel",
+      "priority": 5
+    },
+    {
+      "attr_path": "gcc",
+      "broken": false,
+      "derivation": "/nix/store/91y6ir9sj8g5sf0nhmgzi0gdinh2mnh2-gcc-wrapper-14-20241116.drv",
+      "description": "GNU Compiler Collection, version 14-20241116 (wrapper script)",
+      "install_id": "gcc",
+      "license": "GPL-3.0-or-later",
+      "locked_url": "https://github.com/flox/nixpkgs?rev=0196c0175e9191c474c26ab5548db27ef5d34b05",
+      "name": "gcc-wrapper-14-20241116",
+      "pname": "gcc",
+      "rev": "0196c0175e9191c474c26ab5548db27ef5d34b05",
+      "rev_count": 758135,
+      "rev_date": "2025-02-24T03:24:50Z",
+      "scrape_date": "2025-02-25T02:25:54Z",
+      "stabilities": [
+        "unstable"
+      ],
+      "unfree": false,
+      "version": "14-20241116",
+      "outputs_to_install": [
+        "man",
+        "out"
+      ],
+      "outputs": {
+        "info": "/nix/store/i5c2plqnvy1162ldl0vsvvbhqir36jcd-gcc-wrapper-14-20241116-info",
+        "man": "/nix/store/17lzpc2d07kqi07qd152p0r05h2yak3r-gcc-wrapper-14-20241116-man",
+        "out": "/nix/store/dmmn8lxy19yvqskcjy4w3z1yipzqfid3-gcc-wrapper-14-20241116"
+      },
+      "system": "x86_64-darwin",
+      "group": "toplevel",
+      "priority": 5
+    },
+    {
+      "attr_path": "gcc",
+      "broken": false,
+      "derivation": "/nix/store/zxgr8l9v8381m2p99rj56gmgn591jbgz-gcc-wrapper-14-20241116.drv",
+      "description": "GNU Compiler Collection, version 14-20241116 (wrapper script)",
+      "install_id": "gcc",
+      "license": "GPL-3.0-or-later",
+      "locked_url": "https://github.com/flox/nixpkgs?rev=0196c0175e9191c474c26ab5548db27ef5d34b05",
+      "name": "gcc-wrapper-14-20241116",
+      "pname": "gcc",
+      "rev": "0196c0175e9191c474c26ab5548db27ef5d34b05",
+      "rev_count": 758135,
+      "rev_date": "2025-02-24T03:24:50Z",
+      "scrape_date": "2025-02-25T02:25:54Z",
+      "stabilities": [
+        "unstable"
+      ],
+      "unfree": false,
+      "version": "14-20241116",
+      "outputs_to_install": [
+        "man",
+        "out"
+      ],
+      "outputs": {
+        "info": "/nix/store/j2iqinh2hk1npgfijm31kzm786cr335z-gcc-wrapper-14-20241116-info",
+        "man": "/nix/store/rkzk4376znb9s9b4lflc174vcv6v8bqq-gcc-wrapper-14-20241116-man",
+        "out": "/nix/store/ii75mhh7sxl11167m1b86p0qrjsjyjmd-gcc-wrapper-14-20241116"
       },
       "system": "x86_64-linux",
       "group": "toplevel",
@@ -395,6 +529,134 @@
       "outputs": {
         "dev": "/nix/store/3wgjvfh9i8c949vdbm0s24ma16j0mncf-mariadb-connector-c-3.3.5-dev",
         "out": "/nix/store/kz3i0p161b4h72gh043w2978ilwv26r8-mariadb-connector-c-3.3.5"
+      },
+      "system": "x86_64-linux",
+      "group": "toplevel",
+      "priority": 5
+    },
+    {
+      "attr_path": "pkg-config",
+      "broken": false,
+      "derivation": "/nix/store/nxdyx307azlhwa5g81fd3yhi8ic7fdqd-pkg-config-wrapper-0.29.2.drv",
+      "description": "Tool that allows packages to find out information about other packages (wrapper script)",
+      "install_id": "pkg-config",
+      "license": "GPL-2.0-or-later",
+      "locked_url": "https://github.com/flox/nixpkgs?rev=0196c0175e9191c474c26ab5548db27ef5d34b05",
+      "name": "pkg-config-wrapper-0.29.2",
+      "pname": "pkg-config",
+      "rev": "0196c0175e9191c474c26ab5548db27ef5d34b05",
+      "rev_count": 758135,
+      "rev_date": "2025-02-24T03:24:50Z",
+      "scrape_date": "2025-02-25T02:25:54Z",
+      "stabilities": [
+        "unstable"
+      ],
+      "unfree": false,
+      "version": "0.29.2",
+      "outputs_to_install": [
+        "man",
+        "out"
+      ],
+      "outputs": {
+        "doc": "/nix/store/vyrvldc15j1k3ragsss60axhh17ycvwx-pkg-config-wrapper-0.29.2-doc",
+        "man": "/nix/store/4y6yff0yrh93j8lipg88bdqhararqnwp-pkg-config-wrapper-0.29.2-man",
+        "out": "/nix/store/x1wigzf0ag4ll8aalq7ka05r93ai6isx-pkg-config-wrapper-0.29.2"
+      },
+      "system": "aarch64-darwin",
+      "group": "toplevel",
+      "priority": 5
+    },
+    {
+      "attr_path": "pkg-config",
+      "broken": false,
+      "derivation": "/nix/store/9w9myndjj9jak105y3ppq8af0n0dskkl-pkg-config-wrapper-0.29.2.drv",
+      "description": "Tool that allows packages to find out information about other packages (wrapper script)",
+      "install_id": "pkg-config",
+      "license": "GPL-2.0-or-later",
+      "locked_url": "https://github.com/flox/nixpkgs?rev=0196c0175e9191c474c26ab5548db27ef5d34b05",
+      "name": "pkg-config-wrapper-0.29.2",
+      "pname": "pkg-config",
+      "rev": "0196c0175e9191c474c26ab5548db27ef5d34b05",
+      "rev_count": 758135,
+      "rev_date": "2025-02-24T03:24:50Z",
+      "scrape_date": "2025-02-25T02:25:54Z",
+      "stabilities": [
+        "unstable"
+      ],
+      "unfree": false,
+      "version": "0.29.2",
+      "outputs_to_install": [
+        "man",
+        "out"
+      ],
+      "outputs": {
+        "doc": "/nix/store/z1y4ggn7d9wjqki3hak608lh8fp3gclw-pkg-config-wrapper-0.29.2-doc",
+        "man": "/nix/store/rqx4s07ddv71iw317fpc8yi4r0h44vvb-pkg-config-wrapper-0.29.2-man",
+        "out": "/nix/store/inp4fiamd05xgr1z1jp57y6kfsi45mcx-pkg-config-wrapper-0.29.2"
+      },
+      "system": "aarch64-linux",
+      "group": "toplevel",
+      "priority": 5
+    },
+    {
+      "attr_path": "pkg-config",
+      "broken": false,
+      "derivation": "/nix/store/bdprzwqghck63yfm8xjqn91yf2ingbd3-pkg-config-wrapper-0.29.2.drv",
+      "description": "Tool that allows packages to find out information about other packages (wrapper script)",
+      "install_id": "pkg-config",
+      "license": "GPL-2.0-or-later",
+      "locked_url": "https://github.com/flox/nixpkgs?rev=0196c0175e9191c474c26ab5548db27ef5d34b05",
+      "name": "pkg-config-wrapper-0.29.2",
+      "pname": "pkg-config",
+      "rev": "0196c0175e9191c474c26ab5548db27ef5d34b05",
+      "rev_count": 758135,
+      "rev_date": "2025-02-24T03:24:50Z",
+      "scrape_date": "2025-02-25T02:25:54Z",
+      "stabilities": [
+        "unstable"
+      ],
+      "unfree": false,
+      "version": "0.29.2",
+      "outputs_to_install": [
+        "man",
+        "out"
+      ],
+      "outputs": {
+        "doc": "/nix/store/3wnh4yavk5l1wkh9ki4w4p3kizx0nay8-pkg-config-wrapper-0.29.2-doc",
+        "man": "/nix/store/x6zbxyyjjsmkmqzckl89vb9piszxi9jc-pkg-config-wrapper-0.29.2-man",
+        "out": "/nix/store/i7qmhhd01jsb857qm3vwrxhpp4ac6lrw-pkg-config-wrapper-0.29.2"
+      },
+      "system": "x86_64-darwin",
+      "group": "toplevel",
+      "priority": 5
+    },
+    {
+      "attr_path": "pkg-config",
+      "broken": false,
+      "derivation": "/nix/store/dgc8xg4mmf40f6rr99y11kx6sps5kxwj-pkg-config-wrapper-0.29.2.drv",
+      "description": "Tool that allows packages to find out information about other packages (wrapper script)",
+      "install_id": "pkg-config",
+      "license": "GPL-2.0-or-later",
+      "locked_url": "https://github.com/flox/nixpkgs?rev=0196c0175e9191c474c26ab5548db27ef5d34b05",
+      "name": "pkg-config-wrapper-0.29.2",
+      "pname": "pkg-config",
+      "rev": "0196c0175e9191c474c26ab5548db27ef5d34b05",
+      "rev_count": 758135,
+      "rev_date": "2025-02-24T03:24:50Z",
+      "scrape_date": "2025-02-25T02:25:54Z",
+      "stabilities": [
+        "unstable"
+      ],
+      "unfree": false,
+      "version": "0.29.2",
+      "outputs_to_install": [
+        "man",
+        "out"
+      ],
+      "outputs": {
+        "doc": "/nix/store/73v8qmya6w17qh764x0kjcv6z5vc1lq0-pkg-config-wrapper-0.29.2-doc",
+        "man": "/nix/store/1y54xdc0mszkx9qwn9lslf8ryxrlvhk0-pkg-config-wrapper-0.29.2-man",
+        "out": "/nix/store/601zbsyxn1zqx22yrif9yxa1x450qfc8-pkg-config-wrapper-0.29.2"
       },
       "system": "x86_64-linux",
       "group": "toplevel",
