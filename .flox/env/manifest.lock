@@ -1,0 +1,638 @@
+{
+  "lockfile-version": 1,
+  "manifest": {
+    "version": 1,
+    "install": {
+      "coreutils": {
+        "pkg-path": "coreutils"
+      },
+      "gum": {
+        "pkg-path": "gum"
+      },
+      "mariadb-connector-c": {
+        "pkg-path": "mariadb-connector-c"
+      },
+      "python": {
+        "pkg-path": "python313Full"
+      },
+      "uv": {
+        "pkg-path": "uv"
+      }
+    },
+    "hook": {
+      "on-activate": "export FLOX_PYTHON_UV_VENV_PATH=\"$FLOX_ENV_PROJECT/.venv\"\nexport FLOX_PYTHON_UV_VENV_INTERPRETER=\"$(grep \"^home = \" \"$FLOX_PYTHON_UV_VENV_PATH/pyvenv.cfg\" 2> /dev/null | sed 's/^home = //' || echo false)\"\nexport FLOX_PYTHON_UV_INTERPRETER=\"$(realpath $(which python3))\"\n\n# Make sure any tools are not attempting to use the Python interpreter from any\n# existing virtual environment.\nunset VIRTUAL_ENV\n\nexport UV_PROJECT_ENVIRONMENT=\"$FLOX_PYTHON_UV_VENV_PATH\"\n\nfunction indent() {\n  echo -e '{{ Foreground \"#cccccc\" \" │ \"}}' | \\\n    gum format -t template --theme=auto\n}\n\nfunction with_spinner() {\n  if [[ \"$FLOX_ENVS_TESTING\" == \"1\" ]]; then\n    bash -c \"$1\"\n  else\n    echo\n    gum spin \\\n      --show-error \\\n      --spinner line \\\n      --spinner.foreground=\"#cccccc\" \\\n      --title \" >>> $2 ...\" \\\n      --title.foreground=\"#cccccc\" \\\n        -- bash -c \"$1\"\n    echo -en \"\\033[2A\\033[K\"\n  fi\n}\n\nfunction ensure_venv() {\n  uv venv -p \"$FLOX_PYTHON_UV_INTERPRETER\" \"$FLOX_PYTHON_UV_VENV_PATH\"\n  source \"$FLOX_PYTHON_UV_VENV_PATH/bin/activate\"\n}\nexport -f ensure_venv\n\nfunction install_packages() {\n  uv sync\n}\nexport -f install_packages\n\n\n\nindent && echo\nindent && echo\n\nif [ \"$FLOX_PYTHON_UV_VENV_INTERPRETER\" != \"$FLOX_PYTHON_UV_INTERPRETER\" ]; then\n  with_spinner ensure_venv \"Creating virtual environment\"\n  indent && echo -e \"{{ Foreground \\\"#ffffff\\\" \\\"✅ Virtual environment was created.\\\" }}\\n\" \\\n    | gum format -t template\nelse\n  indent && echo -e \"{{ Foreground \\\"#ffffff\\\" \\\"✅ Virtual environment already exists.\\\" }}\\n\" \\\n    | gum format -t template\nfi\n\nindent && echo\n\nif [ -f pyproject.toml ]; then\n  with_spinner install_packages \"Installing Python packages\"\n  indent && echo -e \"{{ Foreground \\\"#ffffff\\\" \\\"✅ Python packages installed.\\\" }}\\n\" \\\n    | gum format -t template\nelse\n  indent && echo -e \"{{ Foreground \\\"#ffffff\\\" \\\"✅ No need to install Python packages.\\\" }}\\n\" \\\n    | gum format -t template\nfi\n\nindent && echo\n"
+    },
+    "profile": {
+      "bash": "source \"$FLOX_PYTHON_UV_VENV_PATH/bin/activate\"\n",
+      "zsh": "source \"$FLOX_PYTHON_UV_VENV_PATH/bin/activate\"\n",
+      "fish": "source \"$FLOX_PYTHON_UV_VENV_PATH/bin/activate.fish\"\n",
+      "tcsh": "source \"$FLOX_PYTHON_UV_VENV_PATH/bin/activate.csh\"\n"
+    },
+    "options": {
+      "systems": [
+        "aarch64-darwin",
+        "aarch64-linux",
+        "x86_64-darwin",
+        "x86_64-linux"
+      ],
+      "allow": {
+        "licenses": []
+      },
+      "semver": {}
+    }
+  },
+  "packages": [
+    {
+      "attr_path": "coreutils",
+      "broken": false,
+      "derivation": "/nix/store/7q8fv9wjicgkfjjkivw2yzfpfl45lk81-coreutils-9.6.drv",
+      "description": "GNU Core Utilities",
+      "install_id": "coreutils",
+      "license": "GPL-3.0-or-later",
+      "locked_url": "https://github.com/flox/nixpkgs?rev=0196c0175e9191c474c26ab5548db27ef5d34b05",
+      "name": "coreutils-9.6",
+      "pname": "coreutils",
+      "rev": "0196c0175e9191c474c26ab5548db27ef5d34b05",
+      "rev_count": 758135,
+      "rev_date": "2025-02-24T03:24:50Z",
+      "scrape_date": "2025-02-25T02:25:54Z",
+      "stabilities": [
+        "unstable"
+      ],
+      "unfree": false,
+      "version": "9.6",
+      "outputs_to_install": [
+        "out"
+      ],
+      "outputs": {
+        "info": "/nix/store/drjn3f345aahdswbllkmak16iiwia3a1-coreutils-9.6-info",
+        "out": "/nix/store/fc3m1n18s3a5rs4fffaqhiykvdx7s32n-coreutils-9.6"
+      },
+      "system": "aarch64-darwin",
+      "group": "toplevel",
+      "priority": 5
+    },
+    {
+      "attr_path": "coreutils",
+      "broken": false,
+      "derivation": "/nix/store/56knridcjxacyfpy8k911hi3y9ac4ann-coreutils-9.6.drv",
+      "description": "GNU Core Utilities",
+      "install_id": "coreutils",
+      "license": "GPL-3.0-or-later",
+      "locked_url": "https://github.com/flox/nixpkgs?rev=0196c0175e9191c474c26ab5548db27ef5d34b05",
+      "name": "coreutils-9.6",
+      "pname": "coreutils",
+      "rev": "0196c0175e9191c474c26ab5548db27ef5d34b05",
+      "rev_count": 758135,
+      "rev_date": "2025-02-24T03:24:50Z",
+      "scrape_date": "2025-02-25T02:25:54Z",
+      "stabilities": [
+        "unstable"
+      ],
+      "unfree": false,
+      "version": "9.6",
+      "outputs_to_install": [
+        "out"
+      ],
+      "outputs": {
+        "debug": "/nix/store/j44aax6v510vrqw3xy8xai2kxrs0dhd8-coreutils-9.6-debug",
+        "info": "/nix/store/5f2kqrs31kz6ci1x3y1s9jidh2p0r7aw-coreutils-9.6-info",
+        "out": "/nix/store/rs83v3ivkadsk9p1wk9qrzr3af26x829-coreutils-9.6"
+      },
+      "system": "aarch64-linux",
+      "group": "toplevel",
+      "priority": 5
+    },
+    {
+      "attr_path": "coreutils",
+      "broken": false,
+      "derivation": "/nix/store/s7kqh7hkpa7xw94h3qqblrx465ba32dx-coreutils-9.6.drv",
+      "description": "GNU Core Utilities",
+      "install_id": "coreutils",
+      "license": "GPL-3.0-or-later",
+      "locked_url": "https://github.com/flox/nixpkgs?rev=0196c0175e9191c474c26ab5548db27ef5d34b05",
+      "name": "coreutils-9.6",
+      "pname": "coreutils",
+      "rev": "0196c0175e9191c474c26ab5548db27ef5d34b05",
+      "rev_count": 758135,
+      "rev_date": "2025-02-24T03:24:50Z",
+      "scrape_date": "2025-02-25T02:25:54Z",
+      "stabilities": [
+        "unstable"
+      ],
+      "unfree": false,
+      "version": "9.6",
+      "outputs_to_install": [
+        "out"
+      ],
+      "outputs": {
+        "info": "/nix/store/y82r414nsybv15q3g8gw9vi7vb152p4g-coreutils-9.6-info",
+        "out": "/nix/store/lhskijnyvsflx262m1f2sahijzqcpdh4-coreutils-9.6"
+      },
+      "system": "x86_64-darwin",
+      "group": "toplevel",
+      "priority": 5
+    },
+    {
+      "attr_path": "coreutils",
+      "broken": false,
+      "derivation": "/nix/store/l25fdyclnnwp5gjbb7xb7h4vsgqp03dk-coreutils-9.6.drv",
+      "description": "GNU Core Utilities",
+      "install_id": "coreutils",
+      "license": "GPL-3.0-or-later",
+      "locked_url": "https://github.com/flox/nixpkgs?rev=0196c0175e9191c474c26ab5548db27ef5d34b05",
+      "name": "coreutils-9.6",
+      "pname": "coreutils",
+      "rev": "0196c0175e9191c474c26ab5548db27ef5d34b05",
+      "rev_count": 758135,
+      "rev_date": "2025-02-24T03:24:50Z",
+      "scrape_date": "2025-02-25T02:25:54Z",
+      "stabilities": [
+        "unstable"
+      ],
+      "unfree": false,
+      "version": "9.6",
+      "outputs_to_install": [
+        "out"
+      ],
+      "outputs": {
+        "debug": "/nix/store/m6wn8q0zvy7pz6wjd221hav5w4blicf7-coreutils-9.6-debug",
+        "info": "/nix/store/i3bay64pdck4zq094qks7j1ivg042nzg-coreutils-9.6-info",
+        "out": "/nix/store/fr9yr63a1267cr0r86w18c77mh3xavcc-coreutils-9.6"
+      },
+      "system": "x86_64-linux",
+      "group": "toplevel",
+      "priority": 5
+    },
+    {
+      "attr_path": "gum",
+      "broken": false,
+      "derivation": "/nix/store/mmxrmzyk0916n65vv1byk3zz89llg7rp-gum-0.15.2.drv",
+      "description": "Tasty Bubble Gum for your shell",
+      "install_id": "gum",
+      "license": "MIT",
+      "locked_url": "https://github.com/flox/nixpkgs?rev=0196c0175e9191c474c26ab5548db27ef5d34b05",
+      "name": "gum-0.15.2",
+      "pname": "gum",
+      "rev": "0196c0175e9191c474c26ab5548db27ef5d34b05",
+      "rev_count": 758135,
+      "rev_date": "2025-02-24T03:24:50Z",
+      "scrape_date": "2025-02-25T02:25:54Z",
+      "stabilities": [
+        "unstable"
+      ],
+      "unfree": false,
+      "version": "0.15.2",
+      "outputs_to_install": [
+        "out"
+      ],
+      "outputs": {
+        "out": "/nix/store/ag125q8398nz167c22m8480kcnhkk36j-gum-0.15.2"
+      },
+      "system": "aarch64-darwin",
+      "group": "toplevel",
+      "priority": 5
+    },
+    {
+      "attr_path": "gum",
+      "broken": false,
+      "derivation": "/nix/store/jcyxkyvyyqv309m0vxgkwqbwmh7c859k-gum-0.15.2.drv",
+      "description": "Tasty Bubble Gum for your shell",
+      "install_id": "gum",
+      "license": "MIT",
+      "locked_url": "https://github.com/flox/nixpkgs?rev=0196c0175e9191c474c26ab5548db27ef5d34b05",
+      "name": "gum-0.15.2",
+      "pname": "gum",
+      "rev": "0196c0175e9191c474c26ab5548db27ef5d34b05",
+      "rev_count": 758135,
+      "rev_date": "2025-02-24T03:24:50Z",
+      "scrape_date": "2025-02-25T02:25:54Z",
+      "stabilities": [
+        "unstable"
+      ],
+      "unfree": false,
+      "version": "0.15.2",
+      "outputs_to_install": [
+        "out"
+      ],
+      "outputs": {
+        "out": "/nix/store/apc8nhsmgm3aida2x2814f6fl4h96lpm-gum-0.15.2"
+      },
+      "system": "aarch64-linux",
+      "group": "toplevel",
+      "priority": 5
+    },
+    {
+      "attr_path": "gum",
+      "broken": false,
+      "derivation": "/nix/store/izm70dx262wsz5cvdkfbkqr0wdj87501-gum-0.15.2.drv",
+      "description": "Tasty Bubble Gum for your shell",
+      "install_id": "gum",
+      "license": "MIT",
+      "locked_url": "https://github.com/flox/nixpkgs?rev=0196c0175e9191c474c26ab5548db27ef5d34b05",
+      "name": "gum-0.15.2",
+      "pname": "gum",
+      "rev": "0196c0175e9191c474c26ab5548db27ef5d34b05",
+      "rev_count": 758135,
+      "rev_date": "2025-02-24T03:24:50Z",
+      "scrape_date": "2025-02-25T02:25:54Z",
+      "stabilities": [
+        "unstable"
+      ],
+      "unfree": false,
+      "version": "0.15.2",
+      "outputs_to_install": [
+        "out"
+      ],
+      "outputs": {
+        "out": "/nix/store/pnj2l2bjp5cnmhfhdrpn94vmz4qavk4x-gum-0.15.2"
+      },
+      "system": "x86_64-darwin",
+      "group": "toplevel",
+      "priority": 5
+    },
+    {
+      "attr_path": "gum",
+      "broken": false,
+      "derivation": "/nix/store/9n9fxc5lf4k7d1jcmrfzivy2cq6hi7mp-gum-0.15.2.drv",
+      "description": "Tasty Bubble Gum for your shell",
+      "install_id": "gum",
+      "license": "MIT",
+      "locked_url": "https://github.com/flox/nixpkgs?rev=0196c0175e9191c474c26ab5548db27ef5d34b05",
+      "name": "gum-0.15.2",
+      "pname": "gum",
+      "rev": "0196c0175e9191c474c26ab5548db27ef5d34b05",
+      "rev_count": 758135,
+      "rev_date": "2025-02-24T03:24:50Z",
+      "scrape_date": "2025-02-25T02:25:54Z",
+      "stabilities": [
+        "unstable"
+      ],
+      "unfree": false,
+      "version": "0.15.2",
+      "outputs_to_install": [
+        "out"
+      ],
+      "outputs": {
+        "out": "/nix/store/zlxpr8hpsxjmvzs33yln133nhc73a8z7-gum-0.15.2"
+      },
+      "system": "x86_64-linux",
+      "group": "toplevel",
+      "priority": 5
+    },
+    {
+      "attr_path": "mariadb-connector-c",
+      "broken": false,
+      "derivation": "/nix/store/4w2cxpmr8wlqsmhmnz2x4ja4yx57y021-mariadb-connector-c-3.3.5.drv",
+      "description": "Client library that can be used to connect to MySQL or MariaDB",
+      "install_id": "mariadb-connector-c",
+      "license": "LGPL-2.1-or-later",
+      "locked_url": "https://github.com/flox/nixpkgs?rev=0196c0175e9191c474c26ab5548db27ef5d34b05",
+      "name": "mariadb-connector-c-3.3.5",
+      "pname": "mariadb-connector-c",
+      "rev": "0196c0175e9191c474c26ab5548db27ef5d34b05",
+      "rev_count": 758135,
+      "rev_date": "2025-02-24T03:24:50Z",
+      "scrape_date": "2025-02-25T02:25:54Z",
+      "stabilities": [
+        "unstable"
+      ],
+      "unfree": false,
+      "version": "3.3.5",
+      "outputs_to_install": [
+        "out"
+      ],
+      "outputs": {
+        "dev": "/nix/store/9zwygn7g6w2l86vkrv2j3ixl2d65i09j-mariadb-connector-c-3.3.5-dev",
+        "out": "/nix/store/1qih5039hmhgrmxhd5zh6fhdqzdb8334-mariadb-connector-c-3.3.5"
+      },
+      "system": "aarch64-darwin",
+      "group": "toplevel",
+      "priority": 5
+    },
+    {
+      "attr_path": "mariadb-connector-c",
+      "broken": false,
+      "derivation": "/nix/store/m40g1ma5gm28xy2z4ncka7dkannxhfhl-mariadb-connector-c-3.3.5.drv",
+      "description": "Client library that can be used to connect to MySQL or MariaDB",
+      "install_id": "mariadb-connector-c",
+      "license": "LGPL-2.1-or-later",
+      "locked_url": "https://github.com/flox/nixpkgs?rev=0196c0175e9191c474c26ab5548db27ef5d34b05",
+      "name": "mariadb-connector-c-3.3.5",
+      "pname": "mariadb-connector-c",
+      "rev": "0196c0175e9191c474c26ab5548db27ef5d34b05",
+      "rev_count": 758135,
+      "rev_date": "2025-02-24T03:24:50Z",
+      "scrape_date": "2025-02-25T02:25:54Z",
+      "stabilities": [
+        "unstable"
+      ],
+      "unfree": false,
+      "version": "3.3.5",
+      "outputs_to_install": [
+        "out"
+      ],
+      "outputs": {
+        "dev": "/nix/store/7ri04cc976ipvpaw85ki4b0hwdb1gdx4-mariadb-connector-c-3.3.5-dev",
+        "out": "/nix/store/623ncvsisxh4c6zqy8jlg7dpxci05kbd-mariadb-connector-c-3.3.5"
+      },
+      "system": "aarch64-linux",
+      "group": "toplevel",
+      "priority": 5
+    },
+    {
+      "attr_path": "mariadb-connector-c",
+      "broken": false,
+      "derivation": "/nix/store/0niaad9lq3pjspkpc3mizlpg6wz4bal2-mariadb-connector-c-3.3.5.drv",
+      "description": "Client library that can be used to connect to MySQL or MariaDB",
+      "install_id": "mariadb-connector-c",
+      "license": "LGPL-2.1-or-later",
+      "locked_url": "https://github.com/flox/nixpkgs?rev=0196c0175e9191c474c26ab5548db27ef5d34b05",
+      "name": "mariadb-connector-c-3.3.5",
+      "pname": "mariadb-connector-c",
+      "rev": "0196c0175e9191c474c26ab5548db27ef5d34b05",
+      "rev_count": 758135,
+      "rev_date": "2025-02-24T03:24:50Z",
+      "scrape_date": "2025-02-25T02:25:54Z",
+      "stabilities": [
+        "unstable"
+      ],
+      "unfree": false,
+      "version": "3.3.5",
+      "outputs_to_install": [
+        "out"
+      ],
+      "outputs": {
+        "dev": "/nix/store/gf2kr7w5gsbj3f54sngai4s2izwrxjyl-mariadb-connector-c-3.3.5-dev",
+        "out": "/nix/store/44cmlrhvnxv3niww00c700l1zavxdlvz-mariadb-connector-c-3.3.5"
+      },
+      "system": "x86_64-darwin",
+      "group": "toplevel",
+      "priority": 5
+    },
+    {
+      "attr_path": "mariadb-connector-c",
+      "broken": false,
+      "derivation": "/nix/store/7cmriyg2iybclplqjbrivcwgb5d8r9q0-mariadb-connector-c-3.3.5.drv",
+      "description": "Client library that can be used to connect to MySQL or MariaDB",
+      "install_id": "mariadb-connector-c",
+      "license": "LGPL-2.1-or-later",
+      "locked_url": "https://github.com/flox/nixpkgs?rev=0196c0175e9191c474c26ab5548db27ef5d34b05",
+      "name": "mariadb-connector-c-3.3.5",
+      "pname": "mariadb-connector-c",
+      "rev": "0196c0175e9191c474c26ab5548db27ef5d34b05",
+      "rev_count": 758135,
+      "rev_date": "2025-02-24T03:24:50Z",
+      "scrape_date": "2025-02-25T02:25:54Z",
+      "stabilities": [
+        "unstable"
+      ],
+      "unfree": false,
+      "version": "3.3.5",
+      "outputs_to_install": [
+        "out"
+      ],
+      "outputs": {
+        "dev": "/nix/store/3wgjvfh9i8c949vdbm0s24ma16j0mncf-mariadb-connector-c-3.3.5-dev",
+        "out": "/nix/store/kz3i0p161b4h72gh043w2978ilwv26r8-mariadb-connector-c-3.3.5"
+      },
+      "system": "x86_64-linux",
+      "group": "toplevel",
+      "priority": 5
+    },
+    {
+      "attr_path": "python313Full",
+      "broken": false,
+      "derivation": "/nix/store/rpa88zlcxx3cafxf2smmp4gspc7zd9nr-python3-3.13.2.drv",
+      "description": "High-level dynamically-typed programming language",
+      "install_id": "python",
+      "license": "Python-2.0",
+      "locked_url": "https://github.com/flox/nixpkgs?rev=0196c0175e9191c474c26ab5548db27ef5d34b05",
+      "name": "python3-3.13.2",
+      "pname": "python313Full",
+      "rev": "0196c0175e9191c474c26ab5548db27ef5d34b05",
+      "rev_count": 758135,
+      "rev_date": "2025-02-24T03:24:50Z",
+      "scrape_date": "2025-02-25T02:25:54Z",
+      "stabilities": [
+        "unstable"
+      ],
+      "unfree": false,
+      "version": "python3-3.13.2",
+      "outputs_to_install": [
+        "out"
+      ],
+      "outputs": {
+        "out": "/nix/store/42a0q1ancwd96jwxiviq73nh4bxh7nkz-python3-3.13.2"
+      },
+      "system": "aarch64-darwin",
+      "group": "toplevel",
+      "priority": 5
+    },
+    {
+      "attr_path": "python313Full",
+      "broken": false,
+      "derivation": "/nix/store/phki433ylsdpgr7iv2w1jmpxnzwsi7mi-python3-3.13.2.drv",
+      "description": "High-level dynamically-typed programming language",
+      "install_id": "python",
+      "license": "Python-2.0",
+      "locked_url": "https://github.com/flox/nixpkgs?rev=0196c0175e9191c474c26ab5548db27ef5d34b05",
+      "name": "python3-3.13.2",
+      "pname": "python313Full",
+      "rev": "0196c0175e9191c474c26ab5548db27ef5d34b05",
+      "rev_count": 758135,
+      "rev_date": "2025-02-24T03:24:50Z",
+      "scrape_date": "2025-02-25T02:25:54Z",
+      "stabilities": [
+        "unstable"
+      ],
+      "unfree": false,
+      "version": "python3-3.13.2",
+      "outputs_to_install": [
+        "out"
+      ],
+      "outputs": {
+        "debug": "/nix/store/0mvsm7px2pj7pmc2w4j1c73qkl1z2778-python3-3.13.2-debug",
+        "out": "/nix/store/s92iwpf4hah2rpxlfi2sdfbclfwy3m9b-python3-3.13.2"
+      },
+      "system": "aarch64-linux",
+      "group": "toplevel",
+      "priority": 5
+    },
+    {
+      "attr_path": "python313Full",
+      "broken": false,
+      "derivation": "/nix/store/11hsnhm8am1vldyb7wj25pj07hanch32-python3-3.13.2.drv",
+      "description": "High-level dynamically-typed programming language",
+      "install_id": "python",
+      "license": "Python-2.0",
+      "locked_url": "https://github.com/flox/nixpkgs?rev=0196c0175e9191c474c26ab5548db27ef5d34b05",
+      "name": "python3-3.13.2",
+      "pname": "python313Full",
+      "rev": "0196c0175e9191c474c26ab5548db27ef5d34b05",
+      "rev_count": 758135,
+      "rev_date": "2025-02-24T03:24:50Z",
+      "scrape_date": "2025-02-25T02:25:54Z",
+      "stabilities": [
+        "unstable"
+      ],
+      "unfree": false,
+      "version": "python3-3.13.2",
+      "outputs_to_install": [
+        "out"
+      ],
+      "outputs": {
+        "out": "/nix/store/r08f2k2mqjh2m173lkfdnk6jkv90qqpl-python3-3.13.2"
+      },
+      "system": "x86_64-darwin",
+      "group": "toplevel",
+      "priority": 5
+    },
+    {
+      "attr_path": "python313Full",
+      "broken": false,
+      "derivation": "/nix/store/07k38zkm6g9lx3pwq0rsk2015x3iz4xr-python3-3.13.2.drv",
+      "description": "High-level dynamically-typed programming language",
+      "install_id": "python",
+      "license": "Python-2.0",
+      "locked_url": "https://github.com/flox/nixpkgs?rev=0196c0175e9191c474c26ab5548db27ef5d34b05",
+      "name": "python3-3.13.2",
+      "pname": "python313Full",
+      "rev": "0196c0175e9191c474c26ab5548db27ef5d34b05",
+      "rev_count": 758135,
+      "rev_date": "2025-02-24T03:24:50Z",
+      "scrape_date": "2025-02-25T02:25:54Z",
+      "stabilities": [
+        "unstable"
+      ],
+      "unfree": false,
+      "version": "python3-3.13.2",
+      "outputs_to_install": [
+        "out"
+      ],
+      "outputs": {
+        "debug": "/nix/store/n7fqfv7f2fb079ar7c63hw4758r303dy-python3-3.13.2-debug",
+        "out": "/nix/store/mh8rvz9i4bnsa3chisawr92g7zjxvlqh-python3-3.13.2"
+      },
+      "system": "x86_64-linux",
+      "group": "toplevel",
+      "priority": 5
+    },
+    {
+      "attr_path": "uv",
+      "broken": false,
+      "derivation": "/nix/store/pq0iffvr4h8mdlzx6ql29kn3ywyk3vpp-uv-0.6.2.drv",
+      "description": "Extremely fast Python package installer and resolver, written in Rust",
+      "install_id": "uv",
+      "license": "[ Apache-2.0, MIT ]",
+      "locked_url": "https://github.com/flox/nixpkgs?rev=0196c0175e9191c474c26ab5548db27ef5d34b05",
+      "name": "uv-0.6.2",
+      "pname": "uv",
+      "rev": "0196c0175e9191c474c26ab5548db27ef5d34b05",
+      "rev_count": 758135,
+      "rev_date": "2025-02-24T03:24:50Z",
+      "scrape_date": "2025-02-25T02:25:54Z",
+      "stabilities": [
+        "unstable"
+      ],
+      "unfree": false,
+      "version": "0.6.2",
+      "outputs_to_install": [
+        "out"
+      ],
+      "outputs": {
+        "out": "/nix/store/s9fwm8wa6k557qgzw8ggh3vzvc6mxghs-uv-0.6.2"
+      },
+      "system": "aarch64-darwin",
+      "group": "toplevel",
+      "priority": 5
+    },
+    {
+      "attr_path": "uv",
+      "broken": false,
+      "derivation": "/nix/store/68sa25y5d0blkmzlyaaq9i24cryza71k-uv-0.6.2.drv",
+      "description": "Extremely fast Python package installer and resolver, written in Rust",
+      "install_id": "uv",
+      "license": "[ Apache-2.0, MIT ]",
+      "locked_url": "https://github.com/flox/nixpkgs?rev=0196c0175e9191c474c26ab5548db27ef5d34b05",
+      "name": "uv-0.6.2",
+      "pname": "uv",
+      "rev": "0196c0175e9191c474c26ab5548db27ef5d34b05",
+      "rev_count": 758135,
+      "rev_date": "2025-02-24T03:24:50Z",
+      "scrape_date": "2025-02-25T02:25:54Z",
+      "stabilities": [
+        "unstable"
+      ],
+      "unfree": false,
+      "version": "0.6.2",
+      "outputs_to_install": [
+        "out"
+      ],
+      "outputs": {
+        "out": "/nix/store/k31jhfb6nc59c7aips07rcfi0lxr69gb-uv-0.6.2"
+      },
+      "system": "aarch64-linux",
+      "group": "toplevel",
+      "priority": 5
+    },
+    {
+      "attr_path": "uv",
+      "broken": false,
+      "derivation": "/nix/store/jgbp07cx787hqzw6p9hr9sfj0mzxrfvl-uv-0.6.2.drv",
+      "description": "Extremely fast Python package installer and resolver, written in Rust",
+      "install_id": "uv",
+      "license": "[ Apache-2.0, MIT ]",
+      "locked_url": "https://github.com/flox/nixpkgs?rev=0196c0175e9191c474c26ab5548db27ef5d34b05",
+      "name": "uv-0.6.2",
+      "pname": "uv",
+      "rev": "0196c0175e9191c474c26ab5548db27ef5d34b05",
+      "rev_count": 758135,
+      "rev_date": "2025-02-24T03:24:50Z",
+      "scrape_date": "2025-02-25T02:25:54Z",
+      "stabilities": [
+        "unstable"
+      ],
+      "unfree": false,
+      "version": "0.6.2",
+      "outputs_to_install": [
+        "out"
+      ],
+      "outputs": {
+        "out": "/nix/store/lah75dkh3f0drbjw48qmjw55c2n95lvj-uv-0.6.2"
+      },
+      "system": "x86_64-darwin",
+      "group": "toplevel",
+      "priority": 5
+    },
+    {
+      "attr_path": "uv",
+      "broken": false,
+      "derivation": "/nix/store/kbvsv5hnrsayxwy68ra5pvs0lq5svyjs-uv-0.6.2.drv",
+      "description": "Extremely fast Python package installer and resolver, written in Rust",
+      "install_id": "uv",
+      "license": "[ Apache-2.0, MIT ]",
+      "locked_url": "https://github.com/flox/nixpkgs?rev=0196c0175e9191c474c26ab5548db27ef5d34b05",
+      "name": "uv-0.6.2",
+      "pname": "uv",
+      "rev": "0196c0175e9191c474c26ab5548db27ef5d34b05",
+      "rev_count": 758135,
+      "rev_date": "2025-02-24T03:24:50Z",
+      "scrape_date": "2025-02-25T02:25:54Z",
+      "stabilities": [
+        "unstable"
+      ],
+      "unfree": false,
+      "version": "0.6.2",
+      "outputs_to_install": [
+        "out"
+      ],
+      "outputs": {
+        "out": "/nix/store/v4jbhh5qy1ndlpn90gv42dx5v426r6nk-uv-0.6.2"
+      },
+      "system": "x86_64-linux",
+      "group": "toplevel",
+      "priority": 5
+    }
+  ]
+}
