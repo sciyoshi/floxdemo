@@ -8,7 +8,7 @@ mariadb-connector-c.pkg-path = "mariadb-connector-c"
 # helper tools
 gum.pkg-path = "gum"
 coreutils.pkg-path = "coreutils"
-gcc.pkg-path = "gcc"
+gcc-unwrapped.pkg-path = "gcc-unwrapped"
 pkg-config.pkg-path = "pkg-config"
 
 [vars]
